@@ -1,0 +1,3 @@
+Hello from Electronics Innovation
+
+This example is to demonstrate SPIFFS with ESP32.
