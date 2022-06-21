@@ -793,6 +793,9 @@ void setup()
 
   // Start server
   server.begin();
+
+  // Add service to MDNS-SD, it's necessary.
+  MDNS.addService("http", "tcp", 80);
 }
 // -----------------------------------------------------------
 void loop()
