@@ -76,336 +76,285 @@ String pwmSliderValue = "0";
 int pwmOutputValue;
 
 const char index_html[] PROGMEM = R"rawliteral(
-    <html>
-    <head>
-        <title>ESP32 Web Server</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-            html {
-                font-family: Arial;
-                display: inline-block;
-                margin: 0px auto;
-                text-align: center;
-            }
-
-            h1 {
-                color: #0F3376;
-                padding: 1vh;
-            }
-
-            h3 {
-                color: brown;
-            }
-
-            p {
-                font-size: 15px;
-            }
-
-            a {
-                font-size: 15px;
-            }
-
-            .button {
-                display: inline-block;
-                background-color: #008CBA;
-                border: none;
-                border-radius: 4px;
-                color: white;
-                padding: 12px 24px;
-                text-decoration: none;
-                font-size: 25px;
-                margin: 2px;
-                cursor: pointer;
-            }
-
-            .button2 {
-                background-color: #f44336;
-            }
-
-            .units {
-                font-size: 5px;
-            }
-
-            .sensor-labels {
-                font-size: 1rem;
-                vertical-align: middle;
-                padding-bottom: 15px;
-            }
-
-            .slidecontainer {
-                width: 100%%;
-            }
-
-            .slider {
-                -webkit-appearance: none;
-                width: 100%%;
-                height: 15px;
-                border-radius: 5px;
-                background: #d3d3d3;
-                outline: none;
-                opacity: 0.7;
-                -webkit-transition: .2s;
-                transition: opacity .2s;
-            }
-
-            .slider:hover {
-                opacity: 1;
-            }
-
-            .slider::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                appearance: none;
-                width: 25px;
-                height: 25px;
-                border-radius: 50%%;
-                background: #04AA6D;
-                cursor: pointer;
-            }
-
-            .slider::-moz-range-thumb {
-                width: 25px;
-                height: 25px;
-                border-radius: 50%%;
-                background: #04AA6D;
-                cursor: pointer;
-            }
-
-            .btn3 {
-                background: #a3a6ad;
-                background-image: -webkit-linear-gradient(top, #a3a6ad, #262626);
-                background-image: -moz-linear-gradient(top, #a3a6ad, #262626);
-                background-image: -ms-linear-gradient(top, #a3a6ad, #262626);
-                background-image: -o-linear-gradient(top, #a3a6ad, #262626);
-                background-image: linear-gradient(to bottom, #a3a6ad, #262626);
-                -webkit-border-radius: 10;
-                -moz-border-radius: 10;
-                border-radius: 10px;
-                -webkit-box-shadow: 3px 3px 3px #666666;
-                -moz-box-shadow: 3px 3px 3px #666666;
-                box-shadow: 3px 3px 3px #666666;
-                font-family: Arial;
-                color: #ffffff;
-                font-size: 16px;
-                padding: 20px 10px 20px 10px;
-                border: solid #565757 3px;
-                text-decoration: none;
-                margin: 20px;
-                width: 120px;
-            }
-
-            .btn3:hover {
-                text-decoration: none;
-            }
-
-            #clock {
-                font-size: 16px;
-                color: red;
-            }
-        </style>
-    </head>
-
-    <body>
-        <h1>ESP32 Web Server</h1>
-        <p><span id="clock">%CLOCK%</span></p>
-        <p>GPIO state (Pin 2): <strong>%STATE%</strong></p>
-        <p><a href="/on"><button class="button">ON</button></a><a href="/off"><button
-                    class="button button2">OFF</button></a></p>
-        <p><span class="sensor-labels">Temperature</span><span id="temperature">%TEMPERATURE%</span>&deg;
-            C </p>
-        <p><span class="sensor-labels">ADC 37=</span><span id="adc37">%ADC37%</span></p>
-        <p><span class="sensor-labels">ADC voltge=</span><span id="adc37v">%ADC37v%</span>mV </p>
-        <h3>Firmware Upgrade</h3>
-        <p><a href="/update">Update Firmware</a></p>
-        <h3>mDNS Test</h3>
-        <p><a href="http://esp32.local" target="_blank">http: //esp32.local</a>
-        </p>
-        <h3>Server IP Address</h3>
-        <p><span id="IPAddr">%IPAddr%</span></p>
-        <h3>LED Dimming (Pin 4)</h3>
-        <div class="slidecontainer"><input type="range" onchange="updateSliderPWM(this)" min="0" max="100" value="0"
-                class="slider" id="pwmSlider">
-            <p>Value: <span id="textSliderValue"></span></p>
-        </div>
-        <script>
-            var slider1 = document.getElementById("pwmSlider");
-            var output1 = document.getElementById("textSliderValue");
-            output1.innerHTML = slider1.value;
-            slider1.oninput = function () {
-                output1.innerHTML = this.value;
-            }
-            function updateSliderPWM(element) {
-                var pwmSliderValue = document.getElementById("pwmSlider").value;
-                var httpRequest = new XMLHttpRequest();
-                httpRequest.open("Get", "/slider?value=" + pwmSliderValue, true);
-                httpRequest.send();
-            }
-        </script>
-        <h3>EQ Mode</h3><button class="btn3">Flat</button><button class="btn3">CINEMA</button><button
-            class="btn3">MUSIC</button><button class="btn3">NIGHT</button><button class="btn3">USER 1</button><button
-            class="btn3">USER 2</button>
-        <h3>RCA Input Trim</h3>
-        <div class="slidecontainer"><input type="range" min="1" max="100" value="50" class="slider" id="myRange2">
-            <p>Value: <span id="demo2"></span></p>
-        </div>
-        <script>var slider2 = document.getElementById("myRange2");
-            var output2 = document.getElementById("demo2");
-            output2.innerHTML = slider2.value;
-
-            slider2.oninput = function () {
-                output2.innerHTML = this.value;
-            }
-
-        </script>
-        <h3>Balance Input Trim</h3>
-        <div class="slidecontainer"><input type="range" min="1" max="100" value="50" class="slider" id="myRange3">
-            <p>Value: <span id="demo3"></span></p>
-        </div>
-        <script>var slider3 = document.getElementById("myRange3");
-            var output3 = document.getElementById("demo3");
-            output3.innerHTML = slider3.value;
-
-            slider3.oninput = function () {
-                output3.innerHTML = this.value;
-            }
-
-        </script>
-        <h3>High Level Trim</h3>
-        <div class="slidecontainer"><input type="range" min="1" max="100" value="50" class="slider" id="myRange4">
-            <p>Value: <span id="demo4"></span></p>
-        </div>
-        <script>var slider4 = document.getElementById("myRange4");
-            var output4 = document.getElementById("demo4");
-            output4.innerHTML = slider4.value;
-
-            slider4.oninput = function () {
-                output4.innerHTML = this.value;
-            }
-
-        </script>
-        <h3>Wireless Input Trim</h3>
-        <div class="slidecontainer"><input type="range" min="1" max="100" value="50" class="slider" id="myRange5">
-            <p>Value: <span id="demo5"></span></p>
-        </div>
-        <script>var slider5 = document.getElementById("myRange5");
-            var output5 = document.getElementById("demo5");
-            output5.innerHTML = slider5.value;
-
-            slider5.oninput = function () {
-                output5.innerHTML = this.value;
-            }
-
-        </script>
-    </body>
-    <script>setInterval(function () {
-            var xhttp = new XMLHttpRequest();
-
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("temperature").innerHTML = this.responseText;
-                }
-            }
-
-                ;
-            xhttp.open("GET", "/temperature", true);
-            xhttp.send();
+<html>
+<head>
+    <title>ESP32 Web Server</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html {
+            font-family: Arial;
+            display: inline-block;
+            margin: 0px auto;
+            text-align: center;
         }
 
-            , 10000);
-
-        setInterval(function () {
-            var xhttp = new XMLHttpRequest();
-
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("clock").innerHTML = this.responseText;
-                }
-            }
-
-                ;
-            xhttp.open("GET", "/clock", true);
-            xhttp.send();
+        h1 {
+            color: #0F3376;
+            padding: 1vh;
         }
 
-            , 1000);
-
-        setInterval(function () {
-            var xhttp = new XMLHttpRequest();
-
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("adc37").innerHTML = this.responseText;
-                }
-            }
-
-                ;
-            xhttp.open("GET", "/adc37", true);
-            xhttp.send();
+        h3 {
+            color: brown;
         }
 
-            , 500);
-
-        setInterval(function () {
-            var xhttp = new XMLHttpRequest();
-
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("adc37v").innerHTML = this.responseText;
-                }
-            }
-
-                ;
-            xhttp.open("GET", "/adc37v", true);
-            xhttp.send();
+        p {
+            font-size: 15px;
         }
 
-            , 1000);
+        a {
+            font-size: 15px;
+        }
 
-    var gateway = 'ws://esp32.local/ws';
-    var websocket;
-    function initWebSocket() {
-      console.log('Trying to open a WebSocket connection...');
-      websocket = new WebSocket(gateway);
-      websocket.onopen    = onOpen;
-      websocket.onclose   = onClose;
-      websocket.onmessage = onMessage; // <-- add this line
-    }
-    function onOpen(event) {
-      console.log('Connection opened');
-    }
-  
-    function onClose(event) {
-      console.log('Connection closed');
-      setTimeout(initWebSocket, 2000);
-    }
-    function onMessage(event) {
-      var state;
-      if (event.data == "1"){
-        state = "ON";
-      }
-      else{
-        state = "OFF";
-      }
-      document.getElementById('state').innerHTML = state;
-    }
-  
-    window.addEventListener('load', onLoad);
-  
-    function onLoad(event) {
-      initWebSocket();
-      initButton();
-    }
-  
-    function initButton() {
-      document.getElementById('button').addEventListener('click', toggle);
-    }
-  
-    function toggle(){
-      websocket.send('toggle');
-    }
+        .button {
+            display: inline-block;
+            background-color: #008CBA;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-size: 25px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        .button2 {
+            background-color: #f44336;
+        }
+
+        .units {
+            font-size: 5px;
+        }
+
+        .sensor-labels {
+            font-size: 1rem;
+            vertical-align: middle;
+            padding-bottom: 15px;
+        }
+
+        .slidecontainer {
+            width: 100%%;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%%;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%%;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+        .btn3 {
+            background: #a3a6ad;
+            background-image: -webkit-linear-gradient(top, #a3a6ad, #262626);
+            background-image: -moz-linear-gradient(top, #a3a6ad, #262626);
+            background-image: -ms-linear-gradient(top, #a3a6ad, #262626);
+            background-image: -o-linear-gradient(top, #a3a6ad, #262626);
+            background-image: linear-gradient(to bottom, #a3a6ad, #262626);
+            -webkit-border-radius: 10;
+            -moz-border-radius: 10;
+            border-radius: 10px;
+            -webkit-box-shadow: 3px 3px 3px #666666;
+            -moz-box-shadow: 3px 3px 3px #666666;
+            box-shadow: 3px 3px 3px #666666;
+            font-family: Arial;
+            color: #ffffff;
+            font-size: 16px;
+            padding: 20px 10px 20px 10px;
+            border: solid #565757 3px;
+            text-decoration: none;
+            margin: 20px;
+            width: 120px;
+        }
+
+        .btn3:hover {
+            text-decoration: none;
+        }
+
+        #clock {
+            font-size: 16px;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ESP32 Web Server</h1>
+    <p><span id="clock">%CLOCK%</span></p>
+    <p>GPIO state (Pin 2): <strong>%STATE%</strong></p>
+    <p><a href="/on"><button class="button">ON</button></a><a href="/off"><button
+                class="button button2">OFF</button></a></p>
+    <p><span class="sensor-labels">Temperature= </span><span id="temperature">%TEMPERATURE%</span>&deg;
+        C </p>
+    <p><span class="sensor-labels">ADC 37=</span><span id="adc37">%ADC37%</span></p>
+    <p><span class="sensor-labels">ADC voltge=</span><span id="adc37v">%ADC37v%</span>mV </p>
+    <h3>Firmware Upgrade</h3>
+    <p><a href="/update">Update Firmware</a></p>
+    <h3>mDNS Test</h3>
+    <p><a href="http://esp32.local" target="_blank">http: //esp32.local</a>
+    </p>
+    <h3>Server IP Address</h3>
+    <p><span id="IPAddr">%IPAddr%</span></p>
+    <h3>LED Dimming (Pin 4)</h3>
+    <div class="slidecontainer"><input type="range" onchange="updateSliderPWM(this)" min="0" max="100" value="0"
+            class="slider" id="pwmSlider">
+        <p>Value: <span id="textSliderValue"></span></p>
+    </div>
+    <script>
+        var slider1 = document.getElementById("pwmSlider");
+        var output1 = document.getElementById("textSliderValue");
+        output1.innerHTML = slider1.value;
+        slider1.oninput = function () {
+            output1.innerHTML = this.value;
+        }
+        function updateSliderPWM(element) {
+            var pwmSliderValue = document.getElementById("pwmSlider").value;
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.open("Get", "/slider?value=" + pwmSliderValue, true);
+            httpRequest.send();
+        }
+    </script>
+    <h3>EQ Mode</h3><button class="btn3">Flat</button><button class="btn3">CINEMA</button><button
+        class="btn3">MUSIC</button><button class="btn3">NIGHT</button><button class="btn3">USER 1</button><button
+        class="btn3">USER 2</button>
+    <h3>RCA Input Trim</h3>
+    <div class="slidecontainer"><input type="range" min="1" max="100" value="50" class="slider" id="myRange2">
+        <p>Value: <span id="demo2"></span></p>
+    </div>
+    <script>var slider2 = document.getElementById("myRange2");
+        var output2 = document.getElementById("demo2");
+        output2.innerHTML = slider2.value;
+
+        slider2.oninput = function () {
+            output2.innerHTML = this.value;
+        }
 
     </script>
+    <h3>Balance Input Trim</h3>
+    <div class="slidecontainer"><input type="range" min="1" max="100" value="50" class="slider" id="myRange3">
+        <p>Value: <span id="demo3"></span></p>
+    </div>
+    <script>var slider3 = document.getElementById("myRange3");
+        var output3 = document.getElementById("demo3");
+        output3.innerHTML = slider3.value;
 
-    </html>
+        slider3.oninput = function () {
+            output3.innerHTML = this.value;
+        }
+
+    </script>
+    <h3>High Level Trim</h3>
+    <div class="slidecontainer"><input type="range" min="1" max="100" value="50" class="slider" id="myRange4">
+        <p>Value: <span id="demo4"></span></p>
+    </div>
+    <script>var slider4 = document.getElementById("myRange4");
+        var output4 = document.getElementById("demo4");
+        output4.innerHTML = slider4.value;
+
+        slider4.oninput = function () {
+            output4.innerHTML = this.value;
+        }
+
+    </script>
+    <h3>Wireless Input Trim</h3>
+    <div class="slidecontainer"><input type="range" min="1" max="100" value="50" class="slider" id="myRange5">
+        <p>Value: <span id="demo5"></span></p>
+    </div>
+    <script>var slider5 = document.getElementById("myRange5");
+        var output5 = document.getElementById("demo5");
+        output5.innerHTML = slider5.value;
+
+        slider5.oninput = function () {
+            output5.innerHTML = this.value;
+        }
+
+    </script>
+</body>
+<script>setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("temperature").innerHTML = this.responseText;
+            }
+        }
+            ;
+        xhttp.open("GET", "/temperature", true);
+        xhttp.send();
+    }
+        , 10000);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("clock").innerHTML = this.responseText;
+            }
+        }
+            ;
+        xhttp.open("GET", "/clock", true);
+        xhttp.send();
+    }
+        , 1000);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("adc37").innerHTML = this.responseText;
+            }
+        }
+            ;
+        xhttp.open("GET", "/adc37", true);
+        xhttp.send();
+    }
+        , 500);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("adc37v").innerHTML = this.responseText;
+            }
+        }
+            ;
+        xhttp.open("GET", "/adc37v", true);
+        xhttp.send();
+    }
+        , 1000);
+
+</script>
+
+</html>
 )rawliteral";
 
 // -----------------------------------------------------------
@@ -441,68 +390,7 @@ void initWiFi()
   Serial.println(WiFi.localIP());
 }
 // -----------------------------------------------------------
-String getOutputStates()
-{
-  JSONVar myArray;
-  for (int i = 0; i < NUM_OUTPUTS; i++)
-  {
-    myArray["gpios"][i]["output"] = String(outputGPIOs[i]);
-    myArray["gpios"][i]["state"] = String(digitalRead(outputGPIOs[i]));
-  }
-  String jsonString = JSON.stringify(myArray);
-  return jsonString;
-}
 
-void notifyClients(String state)
-{
-  ws.textAll(state);
-}
-
-void handleWebSocketMessage(void *arg, uint8_t *data, size_t len)
-{
-  AwsFrameInfo *info = (AwsFrameInfo *)arg;
-  if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT)
-  {
-    data[len] = 0;
-    if (strcmp((char *)data, "states") == 0)
-    {
-      notifyClients(getOutputStates());
-    }
-    else
-    {
-      int gpio = atoi((char *)data);
-      digitalWrite(gpio, !digitalRead(gpio));
-      notifyClients(getOutputStates());
-    }
-  }
-}
-
-void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,
-             void *arg, uint8_t *data, size_t len)
-{
-  switch (type)
-  {
-  case WS_EVT_CONNECT:
-    Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
-    break;
-  case WS_EVT_DISCONNECT:
-    Serial.printf("WebSocket client #%u disconnected\n", client->id());
-    break;
-  case WS_EVT_DATA:
-    handleWebSocketMessage(arg, data, len);
-    break;
-  case WS_EVT_PONG:
-  case WS_EVT_ERROR:
-    break;
-  }
-}
-
-// Initialize WebSocket
-void initWebSocket()
-{
-  ws.onEvent(onEvent);
-  server.addHandler(&ws);
-}
 // -----------------------------------------------------------
 void initMDNS()
 {
@@ -730,7 +618,7 @@ void setup()
   initWiFi();
 
   // Init WebSocket
-  initWebSocket();
+  // initWebSocket();
 
   // Init MDNS
   initMDNS();
@@ -800,60 +688,6 @@ void setup()
 // -----------------------------------------------------------
 void loop()
 {
-  /*
-  static uint8_t secs;
-  DateTime now = DS3231M.now();  // get the current time from device
-  if (secs != now.second())            // Output if seconds have changed
-  {
-    // Use sprintf() to pretty print the date/time with leading zeros
-    char output_buffer[SPRINTF_BUFFER_SIZE];  ///< Temporary buffer for sprintf()
-    sprintf(output_buffer, "%04d-%02d-%02d %02d:%02d:%02d", now.year(), now.month(), now.day(),
-            now.hour(), now.minute(), now.second());
-    Serial.println(output_buffer);
-    secs = now.second();  // Set the counter variable
-  }                       // of if the seconds have changed
-  readCommand();          // See if serial port has incoming data
-
-  byte error, address;
-  int nDevices;
-  Serial.println("Scanning...");
-  nDevices = 0;
-
-  for (address = 1; address < 127; address++)
-  {
-    // I2C 1
-    Wire.beginTransmission(address);
-    error = Wire.endTransmission();
-    if (error == 0)
-    {
-      Serial.print("1: I2C device found at address 0x");
-      if (address < 16)
-      {
-        Serial.print("0");
-      }
-      Serial.println(address, HEX);
-      nDevices++;
-    }
-    else if (error == 4)
-    {
-      Serial.print("1: Unknow error at address 0x");
-      if (address < 16)
-      {
-        Serial.print("0");
-      }
-      Serial.println(address, HEX);
-    }
-  } // end of for()
-
-  if (nDevices == 0)
-  {
-    Serial.println("1: No I2C devices found\n");
-  }
-  else
-  {
-    Serial.println("1: done\n");
-  }
-*/
   // read the analog / millivolts value for pin 2:
   analogValue = analogRead(ADCPin);
   analogVolts = analogReadMilliVolts(ADCPin);
@@ -863,6 +697,5 @@ void loop()
   // Serial.printf("ADC millivolts value = %d\n",analogVolts);
 
   delay(250);
-  ws.cleanupClients();
 }
 // -----------------------------------------------------------
