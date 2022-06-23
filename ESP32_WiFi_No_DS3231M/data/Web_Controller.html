@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="main_icon.png">
+
+    <title>PICO Web Controller</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+	<link href="jumbotron.css" rel="stylesheet">
+	<script type="text/javascript">
+		var ws;
+		
+		function WebSocketStart()
+		{
+			if ("WebSocket" in window)
+			{
+				alert("WebSocket is supported by your Browser!");
+				 // Let us open a web socket
+				 ws = new WebSocket("ws://172.16.17.80:8080/websocket");
+				 ws.onopen = function()
+				 {
+					// Web Socket is connected, send data using send()
+					ws.send("Start the Websocket!");
+					alert("Start the Websocket!");
+				 };
+				 ws.onmessage = function (evt) 
+				 { 
+					var received_msg = evt.data;
+					// alert("Message is received..."+received_msg);
+					ShowTheStatus(received_msg)
+				 };
+				 ws.onclose = function()
+				 { 
+					// websocket is closed.
+					alert("Connection is closed..."); 
+				 };
+			}
+			else
+			{
+				// The browser doesn't support WebSocket
+				alert("WebSocket NOT supported by your Browser!");
+			}
+		}
+		
+		function WebSocketConnection(value)
+		{
+			alert("Sent :" + value);
+			ws.send(value);
+		}
+		
+		function ShowTheStatus(value)
+		{
+			var msg = value
+			if(value.substr(0,3)=="ACK"){
+				if(value.substr(4,2)=="01"){
+					msg = "The Audio : Car" ;
+				}else if(value.substr(4,2)=="02"){
+					msg = "The Audio : Dog" ;
+				}else if(value.substr(4,2)=="03"){
+					msg = "The Audio : Rain" ;
+				}else if(value.substr(4,2)=="11"){
+					msg = "The UART : Hello World" ;
+				}else if(value.substr(4,2)=="12"){
+					msg = "The UART : Mute" ;
+				}else if(value.substr(4,2)=="13"){
+					msg = "The UART : Unmute" ;
+				}
+			}
+			document.getElementById("status").innerHTML=msg;
+		}
+	</script>
+  </head>
+
+  <body>
+	<!-- Nav -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">CONTROLLER</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
+
+    <main role="main">
+
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3"><b>Web Controller for PICO</b></h1>
+		  <br>
+          <p>This is a demo web page for PICO-PI . You can use it to try playing different audio things or test the UART getaway which communucates with MUC .</p>
+          <p><a class="btn btn-primary btn-lg" href="javascript:WebSocketStart()" role="button">Start the connection with Backend &raquo;</a></p>
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- Example row of columns -->
+        <div class="row">
+          <div class="col-md-4">
+            <h2>Audio Demo</h2>
+            <p><button class="btn btn-secondary btn-lg btn-block" value="01" onclick="WebSocketConnection(this.value)">Car &raquo;</button></p>
+			<p><button class="btn btn-secondary btn-lg btn-block" value="02" onclick="WebSocketConnection(this.value)">Dog &raquo;</button></p>
+			<p><button class="btn btn-secondary btn-lg btn-block" value="03" onclick="WebSocketConnection(this.value)">Rain &raquo;</button></p>
+          </div>
+          <div class="col-md-4">
+            <h2>UART Demo</h2>
+            <p><button class="btn btn-secondary btn-lg btn-block" value="11" onclick="WebSocketConnection(this.value)">Hello World &raquo;</button></p>
+			<p><button class="btn btn-secondary btn-lg btn-block" value="12" onclick="WebSocketConnection(this.value)">Mute</button></p>
+			<p><button class="btn btn-secondary btn-lg btn-block" value="13" onclick="WebSocketConnection(this.value)">Unmute</button></p>
+          </div>
+          <div class="col-md-4">
+            <h2>Show Status</h2>
+            <p><span id="status">Click the Button</span></p>
+          </div>
+        </div>
+
+        <hr>
+
+      </div> <!-- /container -->
+
+    </main>
+	
+	<footer class="container">
+      <p><b>Copyright &copy; 2017 Elytone Inc. All rights reserved</b></p>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../../../dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
