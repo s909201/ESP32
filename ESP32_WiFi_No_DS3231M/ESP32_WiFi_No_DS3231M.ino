@@ -354,7 +354,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 // millis(): Get System Tick
 struct _tm
 {
-  uint8_t year;
+  uint16_t year;
   uint8_t month;
   uint8_t day;
   uint8_t hour;
@@ -383,8 +383,8 @@ void printLocalTime()
   Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
   // Serial.println(String(timeinfo.tm_year+1900) + "-" + String(timeinfo.tm_mon+1) + "-" + String(timeinfo.tm_mday) + "," + String(timeinfo.tm_hour) + ":" + String(timeinfo.tm_min)+ ":" + String(timeinfo.tm_sec));
   // get Time information
-  t.year = timeinfo.tm_year + 1900;
-  t.month = timeinfo.tm_mon + 1;
+  t.year = timeinfo.tm_year;
+  t.month = timeinfo.tm_mon;
   t.day = timeinfo.tm_mday;
   t.hour = timeinfo.tm_hour;
   t.min = timeinfo.tm_min;

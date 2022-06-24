@@ -8,6 +8,8 @@ Examples codes based on ESP32-PICO-KIT (D4)
 | IDE                | Arduino IDE   | 1.8.16  |
 
 # Revision History
+- 20220624 : fix ESP32_WiFi_No_DS3231M bugs
+
 - 20220623 : add ESP32_WiFi_No_DS3231M project
 
 - 20220622 : add ESP32_LCD16x2 and ESP32_LCD16x2_ADC, ref: https://www.electronicshub.org/esp32-i2c-lcd/
