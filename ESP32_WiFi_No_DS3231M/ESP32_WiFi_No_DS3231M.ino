@@ -675,6 +675,7 @@ void TASK_ADC()
 {
   if((millis() - TASK_ADC_TICK)>=250)
   {
+    TASK_ADC_TICK = millis();
     // read the analog / millivolts value for pin 2:
     analogValue = analogRead(ADCPin);
     analogVolts = analogReadMilliVolts(ADCPin);
