@@ -8,6 +8,8 @@ Examples codes based on ESP32-PICO-KIT (D4)
 | IDE                | Arduino IDE   | 1.8.16  |
 
 # Revision History
+- 20220711 : add ESP32_WS2812B project
+
 - 20220627 : add ESP32_WiFi_No_DS3231M_LCD16x2 project
 
 - 20220624 : fix ESP32_WiFi_No_DS3231M bugs, add ESP32_WiFi_GPIO and ESP32_WiFi_PhysicalButtonSimultaneously projects
