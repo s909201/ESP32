@@ -681,6 +681,16 @@ void UpdateTime()
   lcd.print(String(buf) + ":");
   sprintf(buf, "%02d", t.sec);
   lcd.print(String(buf));
+
+  if (t.hour == 12)
+  {
+    lcd.noBacklight();
+  }
+  else
+  {
+    lcd.backlight();
+  }
+
   if(updateYear)
   {
     updateYear = 0;
