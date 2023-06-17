@@ -8,6 +8,8 @@ Examples codes based on ESP32-PICO-KIT (D4)
 | IDE                | Arduino IDE   | 1.8.16  |
 
 # Revision History
+- 20230616 : add NodeMCU_32S_LED_CLOCK project (based on ESP-32S board)
+
 - 20220711 : add ESP32_WS2812B project
 
 - 20220627 : add ESP32_WiFi_No_DS3231M_LCD16x2 project
